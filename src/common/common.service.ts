@@ -1,6 +1,6 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { map, catchError, lastValueFrom, last } from 'rxjs';
+import { map, lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class CommonService {
