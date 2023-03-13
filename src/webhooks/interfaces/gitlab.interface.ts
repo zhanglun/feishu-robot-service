@@ -202,14 +202,116 @@ export interface LastCommit {
   author: Author;
 }
 
+export interface Assignee {
+  name: string;
+  username: string;
+  avatar_url: string;
+}
+
+export interface MergeRequest {
+  id: number;
+  target_branch: string;
+  source_branch: string;
+  source_project_id: number;
+  author_id: number;
+  assignee_id: number;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  milestone_id: number;
+  state: string;
+  merge_status: string;
+  target_project_id: number;
+  iid: number;
+  description: string;
+  position: number;
+  labels: Label[];
+  source: Project;
+  target: Project;
+  last_commit: LastCommit;
+  work_in_progress: boolean;
+  assignee: Assignee;
+  detailed_merge_status: string;
+}
+
 export enum MergeRequestActionEnum {
-  open = 'open发起',
-  close = 'close关闭',
-  reopen = 'reopen重新打开',
-  update = 'update更新',
-  approved = 'approved审批通过',
-  unapproved = 'unapproved审批未通过',
-  approval = 'approval批准',
-  unapproval = 'unapproval不批准',
-  merge = 'merge合并',
+  open = '发起',
+  close = '关闭',
+  reopen = '重新打开',
+  update = '更新',
+  approved = '审批通过',
+  unapproved = '审批未通过',
+  approval = '批准',
+  unapproval = '不批准',
+  merge = '合并',
+}
+
+export interface Issue {
+  id: number;
+  title: string;
+  assignee_ids: any[];
+  assignee_id: null;
+  author_id: number;
+  project_id: number;
+  created_at: string;
+  updated_at: string;
+  position: number;
+  branch_name: null;
+  description: string;
+  milestone_id: null;
+  state: string;
+  iid: number;
+  labels: Label[];
+}
+
+export interface Snippet {
+  id: number;
+  title: string;
+  content: string;
+  author_id: number;
+  project_id: number;
+  created_at: string;
+  updated_at: string;
+  file_name: string;
+  expires_at: null;
+  type: string;
+  visibility_level: number;
+}
+
+export interface NoteEventJSON {
+  object_kind: string;
+  event_type: string;
+  user: User;
+  project_id: number;
+  project: Project;
+  repository: Repository;
+  object_attributes: NoteEventObjectAttributes;
+  commit?: Commit;
+  merge_request?: MergeRequest;
+  issue?: Issue;
+  snippet?: Snippet;
+}
+
+export interface NoteEventObjectAttributes {
+  id: number;
+  note: string;
+  noteable_type: string;
+  author_id: number;
+  created_at: string;
+  updated_at: string;
+  project_id: number;
+  attachment: null;
+  line_code: string;
+  commit_id: string;
+  noteable_id: null;
+  system: boolean;
+  st_diff: StDiff;
+  url: string;
+}
+
+export enum NoteActionEnum {
+  Commit = 'Commit',
+  MergeRequest = 'MergeRequest',
+  Issue = 'Issue',
+  Snippet = 'Snippet',
 }
