@@ -11,8 +11,8 @@ import {
   Issue,
   MergeRequest,
   Snippet,
-} from 'src/webhooks/interfaces/gitlab.interface';
-import { MessageTypeEnum } from 'src/common/message.interface';
+} from '../webhooks/interfaces/gitlab.interface';
+import { MessageTypeEnum } from '../common/message.interface';
 
 /**
  * create commit block in feishu message

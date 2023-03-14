@@ -8,7 +8,7 @@ import {
   Headers,
   Body,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { HookEventType } from './interfaces/gitlab.interface';
 import { WebhooksService } from './webhooks.service';
 

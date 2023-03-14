@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CommonService } from 'src/common/common.service';
+import { CommonService } from '../common/common.service';
 import {
   createPushMessage,
   createMergeMessage,
   createNoteMessage,
-} from 'src/helper/messager';
+} from '../helper/messager';
 import {
   HookEventEnum,
   HookEventType,
