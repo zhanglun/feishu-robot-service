@@ -4,6 +4,7 @@ import {
   createPushMessage,
   createMergeMessage,
   createNoteMessage,
+  createBambooBuildMessage,
 } from '../helper/messager';
 import {
   HookEventEnum,
@@ -17,7 +18,11 @@ import {
 export class WebhooksService {
   constructor(private commonService: CommonService) {}
 
-  async handleGitlab(hookType: HookEventType, body: any): Promise<any> {
+  async handleGitlab(
+    robotId: string,
+    hookType: HookEventType,
+    body: any,
+  ): Promise<any> {
     let message = undefined as any;
 
     console.log('%c Line:24 🥥 hookType', 'color:#fca650', hookType);
@@ -36,6 +41,11 @@ export class WebhooksService {
         break;
     }
 
-    return await this.commonService.postFeishu(message);
+    return await this.commonService.postFeishu(robotId, message);
+  }
+
+  async handleBamboo(robotId: string, body: any): Promise<any> {
+    const message = createBambooBuildMessage(body);
+    return await this.commonService.postFeishu(robotId, message);
   }
 }

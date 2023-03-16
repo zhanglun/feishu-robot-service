@@ -379,3 +379,93 @@ export function createNoteMessage(body: NoteEventJSON) {
     },
   };
 }
+
+export function createBambooBuildMessage(body) {
+  const { build, notification } = body;
+
+  return {
+    msg_type: MessageTypeEnum.INTERACTIVE,
+    card: {
+      config: {
+        wide_screen_mode: true,
+      },
+      header: {
+        template: build.status === 'SUCCESS' ? 'green' : 'red',
+        title: {
+          content: `${notification}`,
+          tag: 'plain_text',
+        },
+      },
+      elements: [
+        {
+          fields: [
+            {
+              is_short: true,
+              text: {
+                content: `** 构建状态：** ${build.status}`,
+                tag: 'lark_md',
+              },
+            },
+            {
+              is_short: false,
+              text: {
+                content: `** 构建任务：** [${build.buildPlanName}](${build.resultsUrl})`,
+                tag: 'lark_md',
+              },
+            },
+            {
+              is_short: false,
+              text: {
+                content: `** 任务日志：** [查看](${build.resultsUrl}/log)`,
+                tag: 'lark_md',
+              },
+            },
+            {
+              is_short: false,
+              text: {
+                content: `** 操作人：** **${build.triggerSentence}**`,
+                tag: 'lark_md',
+              },
+            },
+            {
+              is_short: false,
+              text: {
+                content: `** 开始时间：** ${dayjs(build.startedAt).format(
+                  'YYYY-MM-DD HH:mm:ss',
+                )}`,
+                tag: 'lark_md',
+              },
+            },
+            {
+              is_short: false,
+              text: {
+                content: `** 结束时间：** ${dayjs(build.finishedAt).format(
+                  'YYYY-MM-DD HH:mm:ss',
+                )}`,
+                tag: 'lark_md',
+              },
+            },
+          ],
+          tag: 'div',
+        },
+        {
+          tag: 'hr',
+        },
+        {
+          actions: [
+            {
+              tag: 'button',
+              text: {
+                content: '查看详情',
+                tag: 'plain_text',
+              },
+              type: 'primary',
+              url: `${build.resultsUrl}`,
+            },
+          ],
+          tag: 'action',
+        },
+      ],
+    },
+  };
+}

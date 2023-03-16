@@ -7,3 +7,7 @@ rm -rf output
 tar -zxvf output.tar.gz
 
 pm2 start output/dist/main.js --name feishu-robot
+
+pm2 status
+
+# post 

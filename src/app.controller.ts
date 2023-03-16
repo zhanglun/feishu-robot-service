@@ -1,4 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  HttpStatus,
+  Headers,
+  Body,
+} from '@nestjs/common';
+import { Request, Response } from 'express';
 import { AppService } from './app.service';
 
 @Controller('/')
@@ -10,8 +20,15 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('/send-to-feishu')
-  sendToFeishu(): string {
-    return this.appService.sendToFeishu();
+  @Post('custom/message')
+  async sendToFeishu(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Headers() headers,
+    @Body() body,
+  ) {
+    await this.appService.sendToFeishu(body.text);
+
+    res.status(HttpStatus.OK).send('ok');
   }
 }

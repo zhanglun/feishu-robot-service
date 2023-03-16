@@ -115,6 +115,7 @@ export enum HookEventEnum {
   Note_Hook = 'Note Hook',
   Merge_Request_Hook = 'Merge Request Hook',
 }
+
 export type HookEventType = `${HookEventEnum}`;
 
 export interface MergeEventJSON {
