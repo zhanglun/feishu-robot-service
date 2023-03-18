@@ -102,4 +102,21 @@ export class WebhooksController {
 
     res.status(HttpStatus.OK).send('ok');
   }
+
+  @Post('/:robot_id/sentry')
+  async sentryHook(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Headers() headers,
+    @Param() params,
+    @Body() body,
+  ) {
+    const robotId: string = params.robot_id;
+
+    console.log("%c Line:113 🍧 body", "color:#e41a6a", body);
+
+    await this.webhooksService.handleSentry(robotId, body);
+
+    res.status(HttpStatus.OK).send(body);
+  }
 }

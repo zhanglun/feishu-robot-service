@@ -6,6 +6,7 @@ import {
   createNoteMessage,
   createBambooBuildMessage,
 } from '../helper/messager';
+import { createSentryMessage } from '../helper/message/createSentryMessage';
 import {
   HookEventEnum,
   HookEventType,
@@ -46,6 +47,12 @@ export class WebhooksService {
 
   async handleBamboo(robotId: string, body: any): Promise<any> {
     const message = createBambooBuildMessage(body);
+    return await this.commonService.postFeishu(robotId, message);
+  }
+
+  async handleSentry(robotId: string, body: any): Promise<any> {
+    const message = createSentryMessage(body);
+
     return await this.commonService.postFeishu(robotId, message);
   }
 }
