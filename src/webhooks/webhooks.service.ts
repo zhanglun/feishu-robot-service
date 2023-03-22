@@ -6,7 +6,13 @@ import {
   createNoteMessage,
   createBambooBuildMessage,
 } from '../helper/messager';
-import { createSentryMessage } from '../helper/message/createSentryMessage';
+import {
+  createSentryErrorMessage,
+  createSentryIssueMessage,
+  HookResourceEnum,
+  HookResourceType,
+  SentryJSON,
+} from '../helper/message/createSentryMessage';
 import {
   HookEventEnum,
   HookEventType,
@@ -50,8 +56,27 @@ export class WebhooksService {
     return await this.commonService.postFeishu(robotId, message);
   }
 
-  async handleSentry(robotId: string, body: any): Promise<any> {
-    const message = createSentryMessage(body);
+  async handleSentry(
+    robotId: string,
+    hookType: HookResourceType,
+    body: any,
+  ): Promise<any> {
+    let message = undefined as any;
+
+    console.log('%c Line:69 🥟 body', 'color:#ea7e5c', body);
+
+    switch (hookType) {
+      case HookResourceEnum.EVENT_ALERT:
+      // message = createSentryEventAlertMessage(body as SentryJSON);
+      case HookResourceEnum.ISSUE:
+        message = createSentryIssueMessage(body as SentryJSON);
+        break;
+      case HookResourceEnum.ERROR:
+        message = createSentryErrorMessage(body as SentryJSON);
+        break;
+      default:
+        break;
+    }
 
     return await this.commonService.postFeishu(robotId, message);
   }

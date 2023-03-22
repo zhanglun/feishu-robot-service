@@ -28,6 +28,6 @@ export class CommonService {
 
     const data = await lastValueFrom(request);
 
-    return data;
+    return data.data;
   }
 }

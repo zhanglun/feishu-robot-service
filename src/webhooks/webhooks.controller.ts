@@ -112,11 +112,17 @@ export class WebhooksController {
     @Body() body,
   ) {
     const robotId: string = params.robot_id;
+    const hookType = headers['sentry-hook-resource'];
 
-    console.log("%c Line:113 🍧 body", "color:#e41a6a", body);
+    console.log('%c Line:116 🍋 hookType', 'color:#e41a6a', hookType);
+    console.log('%c Line:113 🍧 body', 'color:#e41a6a', body);
 
-    await this.webhooksService.handleSentry(robotId, body);
+    const result = await this.webhooksService.handleSentry(
+      robotId,
+      hookType,
+      body,
+    );
 
-    res.status(HttpStatus.OK).send(body);
+    res.status(HttpStatus.OK).json(result);
   }
 }
