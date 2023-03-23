@@ -69,6 +69,8 @@ export class WebhooksController {
     const robotId: string = params.robot_id;
     const event: HookEventType = headers['x-gitlab-event'];
 
+    console.log('%c Line:67 🌰 body', 'color:#b03734', JSON.stringify(body));
+
     await this.webhooksService.handleGitlab(robotId, event, body);
 
     res.status(HttpStatus.OK).send('ok');
@@ -115,7 +117,7 @@ export class WebhooksController {
     const hookType = headers['sentry-hook-resource'];
 
     console.log('%c Line:116 🍋 hookType', 'color:#e41a6a', hookType);
-    console.log('%c Line:113 🍧 body', 'color:#e41a6a', body);
+    console.log('%c Line:113 🍧 body', 'color:#e41a6a', JSON.stringify(body));
 
     const result = await this.webhooksService.handleSentry(
       robotId,

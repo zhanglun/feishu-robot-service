@@ -52,9 +52,25 @@ export function createPushMessage(body: PushEventJSON) {
     project: { name, git_http_url },
     ref,
     commits,
+    before,
+    after,
   } = body;
 
   const commitBlock = createCommitBlock(commits);
+
+  let template = 'blue';
+  let title = '';
+  const branch = ref.replace('refs/heads/', '');
+
+  if (before.slice(0, 8) === '00000000') {
+    title = `✨ ${user_name} 向 ${name} 推送了分支 ${branch}`;
+  } else if (after.slice(0, 8) === '00000000') {
+    title = `✨ ${user_name} 删除了 ${name} 的分支 ${ref}`;
+    template = 'red';
+  } else {
+    title = `✨ ${user_name} 向 ${name} 的 ${ref} 推送了 ${commits.length} 个提交`;
+  }
+
   return {
     msg_type: MessageTypeEnum.INTERACTIVE,
     card: {
@@ -62,9 +78,9 @@ export function createPushMessage(body: PushEventJSON) {
         wide_screen_mode: true,
       },
       header: {
-        template: 'blue',
+        template: template,
         title: {
-          content: `✨ ${user_name} 向 ${name} 的 ${ref} 推送了 ${commits.length} 个提交`,
+          content: title,
           tag: 'plain_text',
         },
       },
@@ -122,6 +138,8 @@ function createMergeInfoBlock(
     updated_at,
     iid,
     url,
+    title,
+    description,
   } = object_attributes;
 
   return {
@@ -131,6 +149,27 @@ function createMergeInfoBlock(
         text: {
           tag: 'lark_md',
           content: `${user_name} ${MergeRequestActionEnum[action]} 了一个 Merge Request [!${iid}](${url})`,
+        },
+      },
+      {
+        is_short: false,
+        text: {
+          tag: 'lark_md',
+          content: '',
+        },
+      },
+      {
+        is_short: false,
+        text: {
+          tag: 'lark_md',
+          content: `**${title}**`,
+        },
+      },
+      {
+        is_short: false,
+        text: {
+          tag: 'lark_md',
+          content: description,
         },
       },
       {
@@ -169,14 +208,14 @@ function createMergeInfoBlock(
         is_short: true,
         text: {
           tag: 'lark_md',
-          content: `**Source Branch：**\n [${source.path_with_namespace}](${source.git_http_url})`,
+          content: `**Source Branch：**\n [${source.path_with_namespace}:${source_branch}](${source.web_url}/-/tree/${source_branch})`,
         },
       },
       {
         is_short: true,
         text: {
           tag: 'lark_md',
-          content: `**Target Branch：**\n [${target.path_with_namespace}](${target.git_http_url})`,
+          content: `**Target Branch：**\n [${target.path_with_namespace}:${target_branch}](${target.web_url}/-/tree/${source_branch})`,
         },
       },
       {
