@@ -49,7 +49,7 @@ function createCommitBlock(commits: Commit[]) {
 export function createPushMessage(body: PushEventJSON) {
   const {
     user_name,
-    project: { name, git_http_url },
+    project: { name, git_http_url, web_url },
     ref,
     commits,
     before,
@@ -60,15 +60,19 @@ export function createPushMessage(body: PushEventJSON) {
 
   let template = 'blue';
   let title = '';
+  let goToUrl = '';
   const branch = ref.replace('refs/heads/', '');
 
   if (before.slice(0, 8) === '00000000') {
     title = `✨ ${user_name} 向 ${name} 推送了分支 ${branch}`;
+    goToUrl = `${web_url}/-/tree${branch}`;
   } else if (after.slice(0, 8) === '00000000') {
     title = `✨ ${user_name} 删除了 ${name} 的分支 ${ref}`;
     template = 'red';
+    goToUrl = `${web_url}`;
   } else {
-    title = `✨ ${user_name} 向 ${name} 的 ${ref} 推送了 ${commits.length} 个提交`;
+    title = `✨ ${user_name} 向 ${name} 的 ${branch} 推送了 ${commits.length} 个提交`;
+    goToUrl = `${web_url}/-/tree${branch}`;
   }
 
   return {
@@ -111,7 +115,7 @@ export function createPushMessage(body: PushEventJSON) {
               },
               type: 'primary',
               multi_url: {
-                url: git_http_url,
+                url: goToUrl,
                 android_url: '',
                 ios_url: '',
                 pc_url: '',
