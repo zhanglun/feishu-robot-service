@@ -67,7 +67,7 @@ export function createPushMessage(body: PushEventJSON) {
     title = `✨ ${user_name} 向 ${name} 推送了分支 ${branch}`;
     goToUrl = `${web_url}/-/tree${branch}`;
   } else if (after.slice(0, 8) === '00000000') {
-    title = `✨ ${user_name} 删除了 ${name} 的分支 ${ref}`;
+    title = `🗑️ ${user_name} 删除了 ${name} 的分支 ${ref}`;
     template = 'red';
     goToUrl = `${web_url}`;
   } else {
