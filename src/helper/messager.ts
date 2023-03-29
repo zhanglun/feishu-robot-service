@@ -65,14 +65,14 @@ export function createPushMessage(body: PushEventJSON) {
 
   if (before.slice(0, 8) === '00000000') {
     title = `✨ ${user_name} 向 ${name} 推送了分支 ${branch}`;
-    goToUrl = `${web_url}/-/tree${branch}`;
+    goToUrl = `${web_url}/-/tree/${branch}`;
   } else if (after.slice(0, 8) === '00000000') {
     title = `🗑️ ${user_name} 删除了 ${name} 的分支 ${ref}`;
     template = 'red';
     goToUrl = `${web_url}`;
   } else {
     title = `✨ ${user_name} 向 ${name} 的 ${branch} 推送了 ${commits.length} 个提交`;
-    goToUrl = `${web_url}/-/tree${branch}`;
+    goToUrl = `${web_url}/-/tree/${branch}`;
   }
 
   return {
