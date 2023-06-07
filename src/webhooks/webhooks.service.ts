@@ -9,6 +9,7 @@ import {
 import {
   createSentryErrorMessage,
   createSentryIssueMessage,
+  createSentryEventAlertMessage,
   HookResourceEnum,
   HookResourceType,
   SentryJSON,
@@ -63,11 +64,10 @@ export class WebhooksService {
   ): Promise<any> {
     let message = undefined as any;
 
-    console.log('%c Line:69 🥟 body', 'color:#ea7e5c', body);
-
     switch (hookType) {
       case HookResourceEnum.EVENT_ALERT:
-      // message = createSentryEventAlertMessage(body as SentryJSON);
+        message = createSentryEventAlertMessage(body as SentryJSON);
+        break;
       case HookResourceEnum.ISSUE:
         message = createSentryIssueMessage(body as SentryJSON);
         break;

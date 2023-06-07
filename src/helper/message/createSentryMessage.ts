@@ -42,6 +42,8 @@ export interface Data {
   issue?: Issue;
   error?: Error;
   event?: Event;
+
+  triggered_rule?: string;
 }
 
 export interface Issue {
@@ -125,6 +127,7 @@ export interface Error2 {
   value: string;
   url: string;
 }
+
 export interface Extra {
   arguments: Argument[];
 }
@@ -172,6 +175,7 @@ export interface Event {
   version: string;
   web_url: string;
 }
+
 export interface Contexts {
   browser: Browser;
   os: Os;
@@ -219,6 +223,7 @@ export interface Data2 {
 export interface Stacktrace {
   frames: Frame[];
 }
+
 export interface Frame {
   abs_path: string;
   colno: number;
@@ -251,6 +256,7 @@ export interface GroupingConfig {
   enhancements: string;
   id: string;
 }
+
 export interface Sdk {
   integrations: string[];
   name: string;
@@ -266,6 +272,7 @@ export interface Package {
 export interface User {
   ip_address: string;
 }
+
 export interface Metadata {
   filename: string;
   type: string;
@@ -608,12 +615,86 @@ export function createSentryErrorMessage(body: SentryJSON) {
           tag: 'div',
           fields: [
             createField(
-              `**🕐 时间：**\n${dayjs(datetime).format('YYYY-MM-DD HH:mm:ss')}`,
+              `**🕐 时间：**${dayjs(datetime).format('YYYY-MM-DD HH:mm:ss')}`,
               true,
             ),
-            createField(`**📋 项目：**\n [${project_name}](${web_url})`, true),
-            createField(`**📍 部署环境：**\n${environment}`, true),
+            createField(`**📋 项目：** [${project_name}](${web_url})`, true),
             createField(''),
+            createField(`**📍 部署环境：**${environment}`, true),
+            createField(''),
+            createField(
+              `**🚨 错误信息：**\n**${metadata.type}**\n${metadata.value}\n${metadata.filename} in ${culprit}`,
+            ),
+          ],
+        },
+        {
+          actions: [
+            {
+              tag: 'button',
+              text: {
+                content: '开始处理',
+                tag: 'plain_text',
+              },
+              type: 'primary',
+              url: web_url,
+              value: {
+                key: 'value',
+              },
+            },
+          ],
+          tag: 'action',
+        },
+        {
+          tag: 'hr',
+        },
+        {
+          elements: [
+            {
+              content: `来自Sentry日志平台`,
+              tag: 'lark_md',
+            },
+          ],
+          tag: 'note',
+        },
+      ],
+    },
+  };
+}
+
+export function createSentryEventAlertMessage(body: SentryJSON) {
+  const { data } = body;
+  const { event, triggered_rule } = data;
+  const { url, web_url, location, datetime, title, culprit, type, metadata } =
+    event;
+  const LEVEL = type.toUpperCase();
+  const project_name = url.match(/projects\/(.*)\/events?/)[1] || 'UNKNOWN';
+
+  return {
+    msg_type: 'interactive',
+    card: {
+      config: {
+        wide_screen_mode: true,
+        enable_forward: true,
+      },
+      header: {
+        template: getHeaderColor(LEVEL),
+        title: {
+          content: `🚨【Alert】 ${project_name} 项目发出了告警 ${triggered_rule}`,
+          tag: 'plain_text',
+        },
+      },
+      elements: [
+        {
+          tag: 'div',
+          fields: [
+            createField(
+              `**🕐 时间：**${dayjs(datetime).format('YYYY-MM-DD HH:mm:ss')}`,
+              true,
+            ),
+            createField(`**📋 项目：** [${project_name}](${web_url})`, true),
+            createField(''),
+            // createField(`**📍 部署环境：**${environment}`, true),
+            // createField(''),
             createField(
               `**🚨 错误信息：**\n**${metadata.type}**\n${metadata.value}\n${metadata.filename} in ${culprit}`,
             ),
