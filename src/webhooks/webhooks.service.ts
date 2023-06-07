@@ -70,6 +70,7 @@ export class WebhooksService {
         break;
       case HookResourceEnum.ISSUE:
         message = createSentryIssueMessage(body as SentryJSON);
+        console.log("%c Line:73 🥔 message", "color:#93c0a4", message);
         break;
       case HookResourceEnum.ERROR:
         message = createSentryErrorMessage(body as SentryJSON);

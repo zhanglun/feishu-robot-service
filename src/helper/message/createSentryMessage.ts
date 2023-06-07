@@ -450,133 +450,60 @@ function createField(content: string, is_short?: boolean) {
 export function createSentryIssueMessage(body: SentryJSON) {
   const { action, data, actor } = body;
   const { issue } = data;
-  const { level, project } = issue;
+  const { level, metadata, project } = issue;
 
   switch (action) {
     case IssueActionEnum.RESOLVED:
       return {
         ...baseMessage,
-        header: {
-          template: getHeaderColor(IssueActionEnum.RESOLVED),
-          title: {
-            content: `${actor.name} 解决了将 [${project.name}#${issue.id}](asdfasdf) `,
-            tag: 'plain_text',
+        card: {
+          ...baseMessage.card,
+          header: {
+            template: getHeaderColor(IssueActionEnum.RESOLVED),
+            title: {
+              content: `${actor.name} 解决了${issue.shortId}#${issue.id}`,
+              tag: 'lark_md',
+            },
           },
+          elements: [
+            {
+              tag: 'div',
+              fields: [
+                createField(
+                  `**🕐 时间：**${dayjs(new Date()).format(
+                    'YYYY-MM-DD HH:mm:ss',
+                  )}`,
+                  true,
+                ),
+                createField(
+                  `**📋 项目：** [${project.name}](https://sentry.yiwise.com/organizations/yiwise/issues/${issue.id})`,
+                  true,
+                ),
+                createField(''),
+                createField(`**📍 问题等级：**${level}`, true),
+                createField(''),
+                createField(`**🚨 问题信息：**${metadata.value}\n`),
+              ],
+            },
+            {
+              tag: 'hr',
+            },
+            {
+              elements: [
+                {
+                  content: `来自Sentry日志平台`,
+                  tag: 'lark_md',
+                },
+              ],
+              tag: 'note',
+            },
+          ],
         },
-        elements: [
-          {
-            fields: [createField(`asdf`, true)],
-          },
-        ],
       };
       break;
     default:
       break;
   }
-
-  // return {
-  //   msg_type: 'interactive',
-  //   card: {
-  //     config: {
-  //       wide_screen_mode: true,
-  //       enable_forward: true,
-  //     },
-  //     header: {
-  //       template: color,
-  //       title: {
-  //         content: `【网站服务${level}】 ${project} 项目在 ${env}环境出现异常`,
-  //         tag: 'plain_text',
-  //       },
-  //     },
-  //     elements: [
-  //       {
-  //         fields: [
-  //           {
-  //             is_short: true,
-  //             text: {
-  //               content: `**🕐 时间：**\n${dayjs(timestamp).format(
-  //                 'YYYY-MM-DD HH:mm:ss',
-  //               )}`,
-  //               tag: 'lark_md',
-  //             },
-  //           },
-  //           {
-  //             is_short: true,
-  //             text: {
-  //               content: `**📋 项目：**\n${project_name}`,
-  //               tag: 'lark_md',
-  //             },
-  //           },
-  //           {
-  //             is_short: false,
-  //             text: {
-  //               content: '',
-  //               tag: 'lark_md',
-  //             },
-  //           },
-  //           {
-  //             is_short: true,
-  //             text: {
-  //               content: `**📍 部署环境：**\n${env}`,
-  //               tag: 'lark_md',
-  //             },
-  //           },
-  //           {
-  //             is_short: true,
-  //             text: {
-  //               content: `**🔢 事件 ID：**\n${issue_id}`,
-  //               tag: 'lark_md',
-  //             },
-  //           },
-  //           {
-  //             is_short: false,
-  //             text: {
-  //               content: '',
-  //               tag: 'lark_md',
-  //             },
-  //           },
-  //         ],
-  //         tag: 'div',
-  //       },
-  //       {
-  //         tag: 'div',
-  //         text: {
-  //           content: `**${title}**\n${culprit}\n\n**Message: **\n${message}`,
-  //           tag: 'lark_md',
-  //         },
-  //       },
-  //       {
-  //         actions: [
-  //           {
-  //             tag: 'button',
-  //             text: {
-  //               content: '开始处理',
-  //               tag: 'plain_text',
-  //             },
-  //             type: 'primary',
-  //             url: url,
-  //             value: {
-  //               key: 'value',
-  //             },
-  //           },
-  //         ],
-  //         tag: 'action',
-  //       },
-  //       {
-  //         tag: 'hr',
-  //       },
-  //       {
-  //         elements: [
-  //           {
-  //             content: `来自Sentry日志平台`,
-  //             tag: 'lark_md',
-  //           },
-  //         ],
-  //         tag: 'note',
-  //       },
-  //     ],
-  //   },
-  // };
 }
 
 export function createSentryErrorMessage(body: SentryJSON) {
