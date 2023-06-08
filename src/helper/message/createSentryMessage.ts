@@ -434,6 +434,7 @@ const getHeaderColor = (type: string | IssueActionEnum) => {
     INFO: 'blue',
     [IssueActionEnum.CREATED]: 'red',
     [IssueActionEnum.RESOLVED]: 'green',
+    [IssueActionEnum.IGNORED]: 'yellow',
   }[type];
 };
 
@@ -500,7 +501,53 @@ export function createSentryIssueMessage(body: SentryJSON) {
           ],
         },
       };
-      break;
+    case IssueActionEnum.IGNORED:
+      return {
+        ...baseMessage,
+        card: {
+          ...baseMessage.card,
+          header: {
+            template: getHeaderColor(IssueActionEnum.IGNORED),
+            title: {
+              content: `${actor.name} 忽略了${issue.shortId}#${issue.id}`,
+              tag: 'lark_md',
+            },
+          },
+          elements: [
+            {
+              tag: 'div',
+              fields: [
+                createField(
+                  `**🕐 时间：**${dayjs(new Date()).format(
+                    'YYYY-MM-DD HH:mm:ss',
+                  )}`,
+                  true,
+                ),
+                createField(
+                  `**📋 项目：** [${project.name}](https://sentry.yiwise.com/organizations/yiwise/issues/${issue.id})`,
+                  true,
+                ),
+                createField(''),
+                createField(`**📍 问题等级：**${level}`, true),
+                createField(''),
+                createField(`**🚨 问题信息：**${metadata.value}\n`),
+              ],
+            },
+            {
+              tag: 'hr',
+            },
+            {
+              elements: [
+                {
+                  content: `来自Sentry日志平台`,
+                  tag: 'lark_md',
+                },
+              ],
+              tag: 'note',
+            },
+          ],
+        },
+      };
     default:
       break;
   }
